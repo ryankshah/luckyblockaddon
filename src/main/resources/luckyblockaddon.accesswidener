@@ -1,0 +1,3 @@
+accessWidener v2 named
+
+accessible method mod/lucky/fabric/game/LuckyBlockKt onBreak (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/core/BlockPos;Z)V
