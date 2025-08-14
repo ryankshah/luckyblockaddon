@@ -55,7 +55,7 @@ public class LuckyBlockReplacementFeature extends Feature<NoneFeatureConfigurati
         int radius = 8; // Smaller radius for debugging
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
-                for (int y = -60; y <= 80; y++) { // Focus on common Y levels
+                for (int y = -256; y <= 256; y++) { // Focus on common Y levels
                     BlockPos pos = origin.offset(x, y, z);
 
                     if (!level.isOutsideBuildHeight(pos)) {
@@ -68,7 +68,7 @@ public class LuckyBlockReplacementFeature extends Feature<NoneFeatureConfigurati
 
                         if (replacementChance > 0) {
                             if (random.nextFloat() < replacementChance) {
-                                Block disguisedBlock = Blocks.SEA_LANTERN; //ModBlocks.getDisguisedVersion(currentBlock);
+                                Block disguisedBlock = ModBlocks.getDisguisedVersion(currentBlock);
 
                                 if (disguisedBlock != null) {
                                     BlockState replacementState = disguisedBlock.defaultBlockState();
