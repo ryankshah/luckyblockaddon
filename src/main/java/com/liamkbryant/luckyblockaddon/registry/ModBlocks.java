@@ -1,5 +1,6 @@
 package com.liamkbryant.luckyblockaddon.registry;
 
+import com.liamkbryant.luckyblockaddon.LuckyBlockAddon;
 import com.liamkbryant.luckyblockaddon.block.DisguisedLuckyBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -12,21 +13,21 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class ModBlocks {
     public static final String MOD_ID = "luckyblockaddon";
 
     private static final Map<Block, Block> RUNTIME_DISGUISE_MAP = new HashMap<>();
+    private static final Map<Block, String> BLOCK_TYPE_MAP = new HashMap<>();
 
-    // Stone and Dirt blocks (3% replacement chance)
+    // Stone and Dirt blocks (configurable replacement chance)
     public static final Block DISGUISED_STONE = registerDisguisedLuckyBlock("stone", Blocks.STONE);
     public static final Block DISGUISED_DIRT = registerDisguisedLuckyBlock("dirt", Blocks.DIRT);
     public static final Block DISGUISED_GRASS_BLOCK = registerDisguisedLuckyBlock("grass_block", Blocks.GRASS_BLOCK);
     public static final Block DISGUISED_COARSE_DIRT = registerDisguisedLuckyBlock("coarse_dirt", Blocks.COARSE_DIRT);
     public static final Block DISGUISED_GRAVEL = registerDisguisedLuckyBlock("gravel", Blocks.GRAVEL);
 
-    // Wood blocks (5% replacement chance)
+    // Wood blocks (configurable replacement chance)
     public static final Block DISGUISED_BIRCH_LOG = registerDisguisedLuckyBlock("birch_log", Blocks.BIRCH_LOG);
     public static final Block DISGUISED_OAK_LOG = registerDisguisedLuckyBlock("oak_log", Blocks.OAK_LOG);
     public static final Block DISGUISED_SPRUCE_LOG = registerDisguisedLuckyBlock("spruce_log", Blocks.SPRUCE_LOG);
@@ -36,7 +37,7 @@ public class ModBlocks {
     public static final Block DISGUISED_JUNGLE_LOG = registerDisguisedLuckyBlock("jungle_log", Blocks.JUNGLE_LOG);
     public static final Block DISGUISED_MANGROVE_LOG = registerDisguisedLuckyBlock("mangrove_log", Blocks.MANGROVE_LOG);
 
-    // Ore blocks (5% replacement chance)
+    // Ore blocks (configurable replacement chance)
     public static final Block DISGUISED_COAL_ORE = registerDisguisedLuckyBlock("coal_ore", Blocks.COAL_ORE);
     public static final Block DISGUISED_IRON_ORE = registerDisguisedLuckyBlock("iron_ore", Blocks.IRON_ORE);
     public static final Block DISGUISED_DIAMOND_ORE = registerDisguisedLuckyBlock("diamond_ore", Blocks.DIAMOND_ORE);
@@ -46,7 +47,7 @@ public class ModBlocks {
     public static final Block DISGUISED_LAPIS_ORE = registerDisguisedLuckyBlock("lapis_ore", Blocks.LAPIS_ORE);
     public static final Block DISGUISED_REDSTONE_ORE = registerDisguisedLuckyBlock("redstone_ore", Blocks.REDSTONE_ORE);
 
-    // Deepslate ores (5% replacement chance)
+    // Deepslate ores (configurable replacement chance)
     public static final Block DISGUISED_DEEPSLATE_COAL_ORE = registerDisguisedLuckyBlock("deepslate_coal_ore", Blocks.DEEPSLATE_COAL_ORE);
     public static final Block DISGUISED_DEEPSLATE_IRON_ORE = registerDisguisedLuckyBlock("deepslate_iron_ore", Blocks.DEEPSLATE_IRON_ORE);
     public static final Block DISGUISED_DEEPSLATE_DIAMOND_ORE = registerDisguisedLuckyBlock("deepslate_diamond_ore", Blocks.DEEPSLATE_DIAMOND_ORE);
@@ -56,7 +57,7 @@ public class ModBlocks {
     public static final Block DISGUISED_DEEPSLATE_LAPIS_ORE = registerDisguisedLuckyBlock("deepslate_lapis_ore", Blocks.DEEPSLATE_LAPIS_ORE);
     public static final Block DISGUISED_DEEPSLATE_REDSTONE_ORE = registerDisguisedLuckyBlock("deepslate_redstone_ore", Blocks.DEEPSLATE_REDSTONE_ORE);
 
-    // Hay block (10% replacement chance)
+    // Hay block (configurable replacement chance)
     public static final Block DISGUISED_HAY_BLOCK = registerDisguisedLuckyBlock("hay_block", Blocks.HAY_BLOCK);
 
     /**
@@ -89,8 +90,9 @@ public class ModBlocks {
                 new BlockItem(registeredBlock, new Item.Properties())
         );
 
-        // Store the runtime mapping for reference
+        // Store the runtime mappings for reference
         RUNTIME_DISGUISE_MAP.put(registeredBlock, vanillaBlock);
+        BLOCK_TYPE_MAP.put(vanillaBlock, name);
 
         return registeredBlock;
     }
@@ -99,7 +101,6 @@ public class ModBlocks {
      * Initialize the registry
      */
     public static void init() {
-        System.out.println("ModBlocks initialized - " + RUNTIME_DISGUISE_MAP.size() + " disguised lucky blocks registered");
     }
 
     /**
@@ -129,33 +130,20 @@ public class ModBlocks {
     }
 
     /**
-     * Get replacement chance for a vanilla block type
+     * Get replacement chance for a vanilla block type (now uses config system)
      */
     public static float getReplacementChance(Block vanillaBlock) {
-        if (vanillaBlock == Blocks.HAY_BLOCK) {
-            return 0.1f; // 10%
-        } else if (Set.of(Blocks.STONE, Blocks.DIRT, Blocks.GRASS_BLOCK,
-                Blocks.COARSE_DIRT, Blocks.GRAVEL).contains(vanillaBlock)) {
-            return 0.03f; // 3%
-        } else if (Set.of(Blocks.BIRCH_LOG, Blocks.OAK_LOG, Blocks.SPRUCE_LOG,
-                Blocks.ACACIA_LOG, Blocks.CHERRY_LOG, Blocks.DARK_OAK_LOG,
-                Blocks.JUNGLE_LOG, Blocks.MANGROVE_LOG,
-                Blocks.COAL_ORE, Blocks.IRON_ORE, Blocks.DIAMOND_ORE,
-                Blocks.GOLD_ORE, Blocks.EMERALD_ORE, Blocks.COPPER_ORE,
-                Blocks.LAPIS_ORE, Blocks.REDSTONE_ORE,
-                Blocks.DEEPSLATE_COAL_ORE, Blocks.DEEPSLATE_IRON_ORE,
-                Blocks.DEEPSLATE_DIAMOND_ORE, Blocks.DEEPSLATE_GOLD_ORE,
-                Blocks.DEEPSLATE_EMERALD_ORE, Blocks.DEEPSLATE_COPPER_ORE,
-                Blocks.DEEPSLATE_LAPIS_ORE, Blocks.DEEPSLATE_REDSTONE_ORE).contains(vanillaBlock)) {
-            return 0.05f; // 5%
-        }
-        return 0f; // No replacement
-    }
+        String blockType = BLOCK_TYPE_MAP.get(vanillaBlock);
+        if (blockType != null) {
+            float chance = LuckyBlockAddon.getConfig().getReplacementChance(blockType);
 
-    /**
-     * Get the number of registered disguised blocks
-     */
-    public static int getRegisteredBlockCount() {
-        return RUNTIME_DISGUISE_MAP.size();
+            // Log replacement if enabled in config
+            if (LuckyBlockAddon.getConfig().general.enableReplacementLogging) {
+                System.out.println("Replacement chance for " + blockType + ": " + (chance * 100) + "%");
+            }
+
+            return chance;
+        }
+        return 0f; // No replacement for unknown blocks
     }
 }

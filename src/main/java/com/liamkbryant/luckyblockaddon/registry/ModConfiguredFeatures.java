@@ -9,13 +9,19 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 public class ModConfiguredFeatures {
-    public static final ResourceKey<ConfiguredFeature<?, ?>> LUCKY_BLOCK_REPLACEMENT_KEY = 
+    public static final ResourceKey<ConfiguredFeature<?, ?>> LUCKY_BLOCK_REPLACEMENT_UNDERGROUND_KEY =
         ResourceKey.create(Registries.CONFIGURED_FEATURE, 
             new ResourceLocation(LuckyBlockAddon.MOD_ID, "lucky_block_replacement"));
+    public static final ResourceKey<ConfiguredFeature<?, ?>> LUCKY_BLOCK_REPLACEMENT_VEGETAL_KEY =
+            ResourceKey.create(Registries.CONFIGURED_FEATURE,
+                    new ResourceLocation(LuckyBlockAddon.MOD_ID, "lucky_block_replacement_vegetal"));
 
     public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context) {
-        context.register(LUCKY_BLOCK_REPLACEMENT_KEY, 
-            new ConfiguredFeature<>(ModFeatures.LUCKY_BLOCK_REPLACEMENT, 
+        context.register(LUCKY_BLOCK_REPLACEMENT_UNDERGROUND_KEY,
+            new ConfiguredFeature<>(ModFeatures.LUCKY_BLOCK_REPLACEMENT_UNDERGROUND,
                 NoneFeatureConfiguration.INSTANCE));
+        context.register(LUCKY_BLOCK_REPLACEMENT_VEGETAL_KEY,
+                new ConfiguredFeature<>(ModFeatures.LUCKY_BLOCK_REPLACEMENT_VEGETAL,
+                        NoneFeatureConfiguration.INSTANCE));
     }
 }

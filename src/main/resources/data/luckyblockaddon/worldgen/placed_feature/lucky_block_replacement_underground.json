@@ -1,9 +1,9 @@
 {
-  "feature": "luckyblockaddon:lucky_block_replacement",
+  "feature": "luckyblockaddon:lucky_block_replacement_underground",
   "placement": [
     {
       "type": "minecraft:rarity_filter",
-      "chance": 5
+      "chance": 4
     },
     {
       "type": "minecraft:in_square"

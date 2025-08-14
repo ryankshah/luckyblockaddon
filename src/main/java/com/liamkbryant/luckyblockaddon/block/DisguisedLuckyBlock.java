@@ -2,6 +2,7 @@ package com.liamkbryant.luckyblockaddon.block;
 
 import mod.lucky.fabric.FabricGameAPIKt;
 import mod.lucky.fabric.FabricJavaGameAPIKt;
+import mod.lucky.fabric.FabricLuckyRegistry;
 import mod.lucky.fabric.game.LuckyBlock;
 import mod.lucky.fabric.game.LuckyBlockEntity;
 import mod.lucky.java.game.LuckyBlockEntityData;
@@ -27,17 +28,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DisguisedLuckyBlock extends BaseEntityBlock {
-
-    private final Block vanillaBlock;
-    private final LuckyBlock luckyBlockDelegate;
-
+public class DisguisedLuckyBlock extends Block {
     public DisguisedLuckyBlock(BlockBehaviour.Properties props, Block vanillaBlock) {
         // Use safe properties that work for all blocks
         super(props);
-
-        this.vanillaBlock = vanillaBlock;
-        this.luckyBlockDelegate = new LuckyBlock();
     }
 
     private static MapColor getMapColorSafely(Block block) {
@@ -56,10 +50,6 @@ public class DisguisedLuckyBlock extends BaseEntityBlock {
         }
     }
 
-    public Block getVanillaBlock() {
-        return vanillaBlock;
-    }
-
     /**
      * Custom lucky block break logic that replicates the private onBreak method
      */
@@ -68,11 +58,7 @@ public class DisguisedLuckyBlock extends BaseEntityBlock {
         if (!FabricJavaGameAPIKt.isClientWorld((LevelAccessor)world)) {
             // Get block entity data if it exists
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            LuckyBlockEntityData blockEntityData = null;
-
-            if (blockEntity instanceof LuckyBlockEntity luckyEntity) {
-                blockEntityData = luckyEntity.getData();
-            }
+            LuckyBlockEntityData blockEntityData = FabricLuckyRegistry.luckyBlockEntity.create(pos, defaultBlockState()).getData();
 
             // Remove block and block entity (same as original)
             world.removeBlock(pos, false);
@@ -91,7 +77,8 @@ public class DisguisedLuckyBlock extends BaseEntityBlock {
 
         // Handle redstone activation (same logic as LuckyBlock)
         if (world.hasNeighborSignal(pos)) {
-            handleLuckyBlockBreak(world, null, pos, true);
+//            handleLuckyBlockBreak(world, null, pos, true);
+            FabricLuckyRegistry.INSTANCE.getLuckyBlock().neighborChanged(state, world, pos, neighborBlock, neighborPos, notify);
         }
     }
 
@@ -99,9 +86,8 @@ public class DisguisedLuckyBlock extends BaseEntityBlock {
     public void playerDestroy(@NotNull Level world, @NotNull Player player, @NotNull BlockPos pos,
                               @NotNull BlockState state, @Nullable BlockEntity blockEntity, @NotNull ItemStack stack) {
         super.playerDestroy(world, player, pos, state, blockEntity, stack);
-
-        // Handle player breaking the block - this is where lucky drops happen
-        handleLuckyBlockBreak(world, player, pos, false);
+        FabricLuckyRegistry.INSTANCE.getLuckyBlock().playerDestroy(world, player, pos, state, blockEntity, stack);
+//        handleLuckyBlockBreak(world, player, pos, false);
     }
 
     @NotNull
@@ -109,7 +95,7 @@ public class DisguisedLuckyBlock extends BaseEntityBlock {
     public InteractionResult use(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos,
                                  @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
         // Delegate to lucky block's right-click behavior
-        return luckyBlockDelegate.use(blockState, world, pos, player, hand, hitResult);
+        return FabricLuckyRegistry.INSTANCE.getLuckyBlock().use(blockState, world, pos, player, hand, hitResult);
     }
 
     @Override
@@ -118,20 +104,19 @@ public class DisguisedLuckyBlock extends BaseEntityBlock {
         super.setPlacedBy(world, pos, state, player, itemStack);
 
         // Delegate to lucky block's placement logic
-        luckyBlockDelegate.setPlacedBy(world, pos, state, player, itemStack);
+        FabricLuckyRegistry.INSTANCE.getLuckyBlock().setPlacedBy(world, pos, state, player, itemStack);
 
         // Check for immediate redstone activation after placement
         if (world.hasNeighborSignal(pos)) {
-            handleLuckyBlockBreak(world, null, pos, true);
+//            handleLuckyBlockBreak(world, null, pos, true);
         }
     }
 
-    @NotNull
-    @Override
-    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-        // Create a lucky block entity (same as lucky block)
-        return luckyBlockDelegate.newBlockEntity(pos, state);
-    }
+//    @NotNull
+//    @Override
+//    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+//        return FabricLuckyRegistry.luckyBlockEntity.create();
+//    }
 
     @NotNull
     @Override
