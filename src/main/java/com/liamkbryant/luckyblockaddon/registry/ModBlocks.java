@@ -1,6 +1,7 @@
 package com.liamkbryant.luckyblockaddon.registry;
 
 import com.liamkbryant.luckyblockaddon.LuckyBlockAddon;
+import com.liamkbryant.luckyblockaddon.block.DisguisedGrassLuckyBlock;
 import com.liamkbryant.luckyblockaddon.block.DisguisedLuckyBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -67,14 +68,15 @@ public class ModBlocks {
         BlockBehaviour.Properties properties = BlockBehaviour.Properties.of()
                 .mapColor(vanillaBlock.defaultMapColor())
                 .strength(vanillaBlock.defaultDestroyTime(), vanillaBlock.getExplosionResistance())
-                .sound(vanillaBlock.getSoundType(vanillaBlock.defaultBlockState()));
+                .sound(vanillaBlock.getSoundType(vanillaBlock.defaultBlockState()))
+                .lightLevel(state -> 15);
 
-        if (vanillaBlock.defaultBlockState().requiresCorrectToolForDrops()) {
-            properties.requiresCorrectToolForDrops();
-        }
+        Block disguisedBlock;
 
-        // Create the disguised block
-        Block disguisedBlock = new DisguisedLuckyBlock(properties, vanillaBlock);
+        if(vanillaBlock == Blocks.GRASS_BLOCK)
+            disguisedBlock = new DisguisedGrassLuckyBlock(properties, vanillaBlock);
+        else
+            disguisedBlock = new DisguisedLuckyBlock(properties, vanillaBlock);
 
         // Register the block
         Block registeredBlock = Registry.register(

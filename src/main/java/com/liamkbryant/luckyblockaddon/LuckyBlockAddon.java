@@ -46,6 +46,11 @@ public class LuckyBlockAddon implements ModInitializer {
 				GenerationStep.Decoration.VEGETAL_DECORATION,
 				ModPlacedFeatures.LUCKY_BLOCK_REPLACEMENT_VEGETAL_KEY
 		);
+		BiomeModifications.addFeature(
+				BiomeSelectors.all(),
+				GenerationStep.Decoration.TOP_LAYER_MODIFICATION,
+				ModPlacedFeatures.LUCKY_BLOCK_REPLACEMENT_VEGETAL_KEY
+		);
 		LOGGER.info("Biome modifications added");
 
 		LOGGER.info("=== LuckyBlockAddon initialized successfully ===");
